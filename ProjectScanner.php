@@ -12,8 +12,12 @@ class ProjectScanner
     /** @var VendorScanner */
     private $vendorScanner;
 
-    public function __construct(ScannerFactory $scannerFactory)
+    public function __construct(ScannerFactory $scannerFactory = null)
     {
+        if ($scannerFactory == null) {
+            $scannerFactory = new ScannerFactory();
+        }
+
         $this->sourceScanner = $scannerFactory->create(ScannerFactory::SOURCE_SCANNER);
         $this->vendorScanner = $scannerFactory->create(ScannerFactory::VENDOR_SCANNER);
     }
