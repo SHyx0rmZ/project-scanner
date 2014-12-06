@@ -2,16 +2,27 @@
 
 namespace SHyx0rmZ\ProjectScanner\ScanResult;
 
+use SHyx0rmZ\ProjectScanner\Util\Util;
 use Symfony\Component\Finder\SplFileInfo;
 
 class SourceScanResult implements ScanResultInterface
 {
     /** @var SplFileInfo */
-    private $info;
+    protected $sourceDir;
+    /** @var SplFileInfo */
+    private $info = null;
+    /** @var string */
+    private $reference = null;
 
-    function __construct(SplFileInfo $info)
+    function __construct(SplFileInfo $sourceDir, SplFileInfo $file)
     {
-        $this->info = $info;
+        $this->sourceDir = $sourceDir;
+
+        $this->info = new SplFileInfo(
+            $file->getRealPath(),
+            Util::getRelativePath($file->getRealPath(), $this->sourceDir->getPath()),
+            Util::getRelativePathname($file->getRealPath(), $this->sourceDir->getPath())
+        );
     }
 
     /**
@@ -27,11 +38,11 @@ class SourceScanResult implements ScanResultInterface
      */
     public function getReference()
     {
-        $reference = $this->info->getRelativePath() . DIRECTORY_SEPARATOR . $this->info->getBasename('.php');
-        $reference = substr($reference, strlen('src/'));
-        $reference = str_replace(DIRECTORY_SEPARATOR, '\\', $reference);
-        $reference = str_replace('\\\\', '\\', $reference);
+        if ($this->reference === null) {
+            $this->reference = Util::getRelativePathname($this->info->getRealPath(), $this->sourceDir->getRealPath());
+            $this->reference = Util::getReference($this->reference);
+        }
 
-        return $reference;
+        return $this->reference;
     }
 }

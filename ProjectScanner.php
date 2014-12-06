@@ -4,6 +4,7 @@ namespace SHyx0rmZ\ProjectScanner;
 
 use SHyx0rmZ\ProjectScanner\Scanner\SourceScanner;
 use SHyx0rmZ\ProjectScanner\Scanner\VendorScanner;
+use SHyx0rmZ\ProjectScanner\ScanResult\ScanResultInterface;
 
 class ProjectScanner
 {
@@ -22,6 +23,10 @@ class ProjectScanner
         $this->vendorScanner = $scannerFactory->create(ScannerFactory::VENDOR_SCANNER);
     }
 
+    /**
+     * @param string $name
+     * @return ScanResultInterface[]
+     */
     public function findInDirectory($name)
     {
         foreach ($this->sourceScanner->findInDirectory($name) as $scanResult) {
