@@ -21,6 +21,9 @@ class ProjectScanner
 
         $this->sourceScanner = $scannerFactory->create(ScannerFactory::SOURCE_SCANNER);
         $this->vendorScanner = $scannerFactory->create(ScannerFactory::VENDOR_SCANNER);
+
+        assert($this->sourceScanner instanceof SourceScanner);
+        assert($this->vendorScanner instanceof VendorScanner);
     }
 
     /**
