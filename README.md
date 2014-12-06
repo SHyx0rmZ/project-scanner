@@ -1,10 +1,10 @@
 project-scanner
 ===============
 
-[![Latest Stable Version](http://poser.services.witches.io/ppokatilo/project-scanner/v/stable.svg)](https://packagist.org/packages/ppokatilo/services-loader)
-[![Total Downloads](http://poser.services.witches.io/ppokatilo/project-scanner/downloads.svg)](https://packagist.org/packages/ppokatilo/services-loader)
-[![Latest Unstable Version](http://poser.services.witches.io/ppokatilo/project-scanner/v/unstable.svg)](https://packagist.org/packages/ppokatilo/services-loader)
-[![License](http://poser.services.witches.io/ppokatilo/project-scanner/license.svg)](https://packagist.org/packages/ppokatilo/services-loader)
+[![Latest Stable Version](http://poser.services.witches.io/ppokatilo/project-scanner/v/stable.svg)](https://packagist.org/packages/ppokatilo/project-scanner)
+[![Total Downloads](http://poser.services.witches.io/ppokatilo/project-scanner/downloads.svg)](https://packagist.org/packages/ppokatilo/project-scanner)
+[![Latest Unstable Version](http://poser.services.witches.io/ppokatilo/project-scanner/v/unstable.svg)](https://packagist.org/packages/ppokatilo/project-scanner)
+[![License](http://poser.services.witches.io/ppokatilo/project-scanner/license.svg)](https://packagist.org/packages/ppokatilo/project-scanner)
 
 Scan directories (for example vendor/, src/) for stuff.
 
@@ -16,7 +16,7 @@ Use ProjectScanner to find classes in directories.
 public function doStuff()
 {
   $projectScanner = new ProjectScanner();
-  
+
   foreach ($projectScanner->findInDirectory('Entity') as $scanResult) {
     echo $scanResult->getReference() . PHP_EOL;
     echo $scanResult->getFileInfo()->getRelativePath() . PHP_EOL;
