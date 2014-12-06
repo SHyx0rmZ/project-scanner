@@ -2,79 +2,39 @@
 
 namespace SHyx0rmZ\ProjectScanner\Scanner;
 
+use SHyx0rmZ\ProjectScanner\ScanResult\Builder\VendorScanResultBuilder;
+use SHyx0rmZ\ProjectScanner\ScanResult\ScanResultInterface;
 use SHyx0rmZ\ProjectScanner\ScanResult\VendorScanResult;
+use SHyx0rmZ\ProjectScanner\Util\ComposerAutoloadProvider;
+use SHyx0rmZ\ProjectScanner\Util\FileInDirectoryFinder;
+use SHyx0rmZ\ProjectScanner\Util\Util;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class VendorScanner implements ScannerInterface
 {
+    /** @var ComposerAutoloadProvider */
+    private $composerAutoloadProvider;
+    /** @var SplFileInfo */
+    private $vendorRoot;
 
-    /**
-     * @var array
-     */
-    private $autoloadDirs = array(
-        'include_paths.php',
-        'autoload_namespaces.php',
-        'autoload_psr4.php',
-        'autoload_classmap.php',
-        'autoload_files.php'
-    );
-
-    /**
-     * @return string[]
-     */
-    public function yieldIncludeDirectories()
+    public function __construct(ComposerAutoloadProvider $composerAutoloadProvider, $vendorDir = null, $projectDir = null)
     {
-        $vendorDir = __DIR__ . '/../../..';
+        $this->composerAutoloadProvider = $composerAutoloadProvider;
 
-        foreach ($this->autoloadDirs as $autoloadDir) {
-            $autoloadFile = $vendorDir . '/composer/' . $autoloadDir;
-
-            if (!is_file($autoloadFile)) {
-                continue;
-            }
-
-            $autoloadMaps = require($autoloadFile);
-
-            foreach ($autoloadMaps as $namespace => $autoloadMap) {
-                $namespace = $this->normalizeNamespace($namespace);
-                $autoloadMap = $this->normalizeAutoloadMap($autoloadMap);
-
-                if ($namespace == '') {
-                    continue;
-                }
-
-                foreach ($autoloadMap as $includeDir) {
-                    yield $namespace => $includeDir;
-                }
-            }
-        }
-    }
-
-    /**
-     * @param $namespace
-     * @return string
-     */
-    private function normalizeNamespace($namespace)
-    {
-        if (!is_string($namespace)) {
-            $namespace = '';
+        if ($projectDir === null) {
+            $projectDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'src';
         }
 
-        return $namespace;
-    }
-
-    /**
-     * @param $autoloadMap
-     * @return array
-     */
-    private function normalizeAutoloadMap($autoloadMap)
-    {
-        if (!is_array($autoloadMap)) {
-            $autoloadMap = array($autoloadMap);
+        if ($vendorDir === null) {
+            $vendorDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'vendor';
         }
 
-        return $autoloadMap;
+        $this->vendorRoot = new SplFileInfo(
+            $vendorDir,
+            Util::getRelativePath($vendorDir, $projectDir),
+            Util::getRelativePathname($vendorDir, $projectDir)
+        );
     }
 
     /**
@@ -82,44 +42,17 @@ class VendorScanner implements ScannerInterface
      */
     public function findInDirectory($name)
     {
-        $vendor = new SplFileInfo(
-            __DIR__ . '/../../../..',
-            '',
-            ''
-        );
-
-        foreach ($this->yieldIncludeDirectories() as $namespace => $include) {
-            if (!is_dir($include)) {
+        /** @var ScanResultInterface $entry */
+        foreach ($this->composerAutoloadProvider->findLibraries($this->vendorRoot->getRealPath()) as $entry) {
+            if (!$entry->getFileInfo()->isDir()) {
                 continue;
             }
 
-            $directoryFinder = new Finder();
-            $directoryFinder->directories()->in($include)->name($name);
-
-            /** @var SplFileInfo $directory */
-            foreach ($directoryFinder as $directory) {
-                $fileFinder = new Finder();
-                $fileFinder->files()->in($directory->getRealPath());
-
-                /** @var SplFileInfo $file */
-                foreach ($fileFinder as $file) {
-                    $relativePathname = substr($file->getRealPath(), strlen($vendor->getRealPath() . DIRECTORY_SEPARATOR));
-
-                    $info = new SplFileInfo(
-                        $file->getRealPath(),
-                        dirname($relativePathname),
-                        $relativePathname
-                    );
-
-                    $reference = $namespace;
-                    $reference .= !empty($directory->getRelativePathname()) ? $directory->getRelativePathname() . DIRECTORY_SEPARATOR : '';
-                    $reference .= $file->getRelativePath() . DIRECTORY_SEPARATOR . $file->getBasename('.php');
-                    $reference = str_replace(DIRECTORY_SEPARATOR, '\\', $reference);
-                    $reference = str_replace('\\\\', '\\', $reference);
-
-                    yield new VendorScanResult($info, $reference);
-                }
+            foreach (Util::findInDirectory($name, $entry->getFileInfo()->getRealPath()) as $file) {
+                yield new VendorScanResult($this->vendorRoot, $entry->getFileInfo(), $file, $entry->getReference());
             }
+        }
+    }
 
         }
     }
