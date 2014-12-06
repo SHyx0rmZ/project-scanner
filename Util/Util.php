@@ -41,4 +41,19 @@ class Util
 
         return $finder->findInDirectory($name, $path);
     }
+
+    public static function modifyPath($rootPath, $relativePath)
+    {
+        $modifiedPath = $rootPath;
+
+        foreach (explode('/', $relativePath) as $pathElement) {
+            if ($pathElement == '..') {
+                $modifiedPath = dirname($modifiedPath);
+            } else {
+                $modifiedPath .= DIRECTORY_SEPARATOR . $pathElement;
+            }
+        }
+
+        return $modifiedPath;
+    }
 }

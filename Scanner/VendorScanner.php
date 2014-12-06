@@ -22,13 +22,8 @@ class VendorScanner implements ScannerInterface
     {
         $this->composerAutoloadProvider = $composerAutoloadProvider;
 
-        if ($projectDir === null) {
-            $projectDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'src';
-        }
-
-        if ($vendorDir === null) {
-            $vendorDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'vendor';
-        }
+        $projectDir = $projectDir ?: Util::modifyPath(__DIR__, '../../../..');
+        $vendorDir = $vendorDir ?: Util::modifyPath(__DIR__, '../../../../vendor');
 
         $this->vendorDir = new SplFileInfo(
             $vendorDir,

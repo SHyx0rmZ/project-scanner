@@ -13,13 +13,8 @@ class SourceScanner implements ScannerInterface
 
     public function __construct($sourceDir = null, $projectDir = null)
     {
-        if ($projectDir === null) {
-            $projectDir = dirname(dirname(dirname(dirname(__DIR__))));
-        }
-
-        if ($sourceDir === null) {
-            $sourceDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'src';
-        }
+        $projectDir = $projectDir ?: Util::modifyPath(__DIR__, '../../../..');
+        $sourceDir = $sourceDir ?: Util::modifyPath(__DIR__, '../../../../src');
 
         $this->sourceDir = new SplFileInfo(
             $sourceDir,
