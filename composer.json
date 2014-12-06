@@ -1,0 +1,23 @@
+{
+    "name": "ppokatilo/project-scanner",
+    "type": "library",
+    "description": "Scan directories (for example vendor/, src/) for stuff",
+    "keywords": [ "scan", "find", "vendor" ],
+    "homepage": "http://github/SHyx0rmZ/project-scanner",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Patrick Pokatilo",
+            "email": "mail@shyxormz.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "symfony/finder": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SHyx0rmZ\\ProjectScanner\\": ""
+        }
+    }
+}
