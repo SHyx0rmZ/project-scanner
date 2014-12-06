@@ -114,7 +114,7 @@ class VendorScanner implements ScannerInterface
                     );
 
                     $reference = $namespace;
-                    $reference .= !empty($directory->getRelativePath()) ? $directory->getRelativePath() . DIRECTORY_SEPARATOR : '';
+                    $reference .= !empty($directory->getRelativePathname()) ? $directory->getRelativePathname() . DIRECTORY_SEPARATOR : '';
                     $reference .= $file->getRelativePath() . DIRECTORY_SEPARATOR . $file->getBasename('.php');
                     $reference = str_replace(DIRECTORY_SEPARATOR, '\\', $reference);
                     $reference = str_replace('\\\\', '\\', $reference);
