@@ -4,7 +4,6 @@ namespace SHyx0rmZ\ProjectScanner\Scanner;
 
 use SHyx0rmZ\ProjectScanner\ScanResult\SourceScanResult;
 use SHyx0rmZ\ProjectScanner\Util\Util;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class SourceScanner implements ScannerInterface

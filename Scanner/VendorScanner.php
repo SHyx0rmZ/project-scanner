@@ -2,13 +2,10 @@
 
 namespace SHyx0rmZ\ProjectScanner\Scanner;
 
-use SHyx0rmZ\ProjectScanner\ScanResult\Builder\VendorScanResultBuilder;
 use SHyx0rmZ\ProjectScanner\ScanResult\ScanResultInterface;
 use SHyx0rmZ\ProjectScanner\ScanResult\VendorScanResult;
 use SHyx0rmZ\ProjectScanner\Util\ComposerAutoloadProvider;
-use SHyx0rmZ\ProjectScanner\Util\FileInDirectoryFinder;
 use SHyx0rmZ\ProjectScanner\Util\Util;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class VendorScanner implements ScannerInterface
