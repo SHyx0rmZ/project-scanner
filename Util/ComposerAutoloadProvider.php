@@ -3,46 +3,58 @@
 namespace SHyx0rmZ\ProjectScanner\Util;
 
 use SHyx0rmZ\ProjectScanner\ScanResult\BasicScanResult;
+use SHyx0rmZ\ProjectScanner\ScanResult\ScanResultInterface;
 use Symfony\Component\Finder\SplFileInfo;
 
 class ComposerAutoloadProvider
 {
-    /**
-     * @var array
-     */
-    private $autoloadDirs = array(
+    /** @var array */
+    private $namespaceFiles = array(
         'autoload_psr4.php',
-//        'autoload_classmap.php',
         'autoload_namespaces.php',
     );
 
+    /** @var array */
+    private $classmapFiles = array(
+        'autoload_classmap.php',
+    );
+
     /**
-     * @return \Generator
+     * @param string $vendorDir
+     * @return ScanResultInterface[]
      */
     public function findLibraries($vendorDir)
     {
-        foreach ($this->autoloadDirs as $autoloadDir) {
-            $autoloadFile = $vendorDir . '/composer/' . $autoloadDir;
+        foreach ($this->findLibrariesNamespace($vendorDir) as $scanResult) {
+            yield $scanResult;
+        }
 
-            if (!is_file($autoloadFile)) {
-                continue;
-            }
+        foreach ($this->findLibrariesClassmap($vendorDir) as $scanResult) {
+            yield $scanResult;
+        }
+    }
 
-            $autoloadMaps = require($autoloadFile);
-
-            foreach ($autoloadMaps as $namespace => $autoloadMap) {
-                $namespace = $this->normalizeNamespace($namespace);
-                $autoloadMap = $this->normalizeAutoloadMap($autoloadMap);
-
-                if ($namespace == '') {
+    /**
+     * @param string $vendorDir
+     * @return ScanResultInterface[]
+     */
+    private function findLibrariesNamespace($vendorDir)
+    {
+        foreach ($this->namespaceFiles as $namespaceFile) {
+            foreach ($this->getVendorMap($vendorDir, $namespaceFile) as $namespace => $directories) {
+                if (empty($namespace)) {
                     continue;
                 }
 
-                foreach ($autoloadMap as $includeDir) {
+                if (!is_array($directories)) {
+                    $directories = array($directories);
+                }
+
+                foreach ($directories as $directory) {
                     $info = new SplFileInfo(
-                        $includeDir,
-                        Util::getRelativePath($includeDir, $vendorDir),
-                        Util::getRelativePathname($includeDir, $vendorDir)
+                        $directory,
+                        Util::getRelativePath($directory, $vendorDir),
+                        Util::getRelativePathname($directory, $vendorDir)
                     );
 
                     yield new BasicScanResult($info, $namespace);
@@ -52,28 +64,46 @@ class ComposerAutoloadProvider
     }
 
     /**
-     * @param $namespace
-     * @return string
+     * @param string $vendorDir
+     * @return ScanResultInterface[]
      */
-    private function normalizeNamespace($namespace)
+    private function findLibrariesClassmap($vendorDir)
     {
-        if (!is_string($namespace)) {
-            $namespace = '';
-        }
+        foreach ($this->classmapFiles as $classmapFile) {
+            foreach ($this->getVendorMap($vendorDir, $classmapFile) as $namespace => $file) {
+                $info = new SplFileInfo(
+                    $file,
+                    Util::getRelativePath($file, $vendorDir),
+                    Util::getRelativePathname($file, $vendorDir)
+                );
 
-        return $namespace;
+                yield new BasicScanResult($info, $namespace);
+            }
+        }
     }
 
     /**
-     * @param $autoloadMap
+     * @param string $vendorDir
+     * @param string $vendorFile
      * @return array
      */
-    private function normalizeAutoloadMap($autoloadMap)
+    private function getVendorMap($vendorDir, $vendorFile)
     {
-        if (!is_array($autoloadMap)) {
-            $autoloadMap = array($autoloadMap);
+        $autoloadFile = new SplFileInfo(
+            Util::modifyPath($vendorDir, 'composer/' . $vendorFile),
+            'composer',
+            'composer/' . $vendorFile
+        );
+
+        if (!$autoloadFile->isFile()) {
+            return array();
         }
 
-        return $autoloadMap;
+        /** @var array $map */
+        $map = require($autoloadFile->getRealPath());
+
+        assert(is_array($map));
+
+        return $map;
     }
 }

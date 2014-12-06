@@ -39,12 +39,16 @@ class VendorScanner implements ScannerInterface
     {
         /** @var ScanResultInterface $entry */
         foreach ($this->composerAutoloadProvider->findLibraries($this->vendorDir->getRealPath()) as $entry) {
-            if (!$entry->getFileInfo()->isDir()) {
-                continue;
-            }
+            if ($entry->getFileInfo()->isDir()) {
+                foreach (Util::findInDirectory($name, $entry->getFileInfo()->getRealPath()) as $file) {
+                    yield new VendorScanResult($this->vendorDir, $entry->getFileInfo(), $file, $entry->getReference());
+                }
+            } elseif ($entry->getFileInfo()->isFile()) {
+                $relativePathname = Util::getRelativePathname($entry->getFileInfo()->getRealPath(), $this->vendorDir->getRealPath());
 
-            foreach (Util::findInDirectory($name, $entry->getFileInfo()->getRealPath()) as $file) {
-                yield new VendorScanResult($this->vendorDir, $entry->getFileInfo(), $file, $entry->getReference());
+                if (in_array($name, explode(DIRECTORY_SEPARATOR, $relativePathname))) {
+                    yield $entry;
+                }
             }
         }
     }
