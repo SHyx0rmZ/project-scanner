@@ -4,7 +4,7 @@ namespace SHyx0rmZ\ProjectScanner\Scanner;
 
 use SHyx0rmZ\ProjectScanner\ScanResult\LazyScanResult;
 use SHyx0rmZ\ProjectScanner\ScanResult\ScanResultInterface;
-use SHyx0rmZ\ProjectScanner\Util\ComposerAutoloadProvider;
+use SHyx0rmZ\ProjectScanner\Util\ComposerLibraryFinder;
 use SHyx0rmZ\ProjectScanner\Util\Util;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -15,19 +15,19 @@ use Symfony\Component\Finder\SplFileInfo;
  */
 class VendorScanner extends AbstractDirectoryScanner
 {
-    /** @var ComposerAutoloadProvider */
-    private $composerAutoloadProvider;
+    /** @var ComposerLibraryFinder */
+    private $composerLibraryFinder;
 
     /**
-     * @param ComposerAutoloadProvider $composerAutoloadProvider
+     * @param ComposerLibraryFinder $composerLibraryFinder
      * @param string $baseDir
      * @param string $projectDir
      */
-    public function __construct(ComposerAutoloadProvider $composerAutoloadProvider, $baseDir = '', $projectDir = '')
+    public function __construct(ComposerLibraryFinder $composerLibraryFinder, $baseDir = '', $projectDir = '')
     {
         parent::__construct($baseDir, $projectDir);
 
-        $this->composerAutoloadProvider = $composerAutoloadProvider;
+        $this->composerLibraryFinder = $composerLibraryFinder;
     }
 
     /**
@@ -44,7 +44,7 @@ class VendorScanner extends AbstractDirectoryScanner
     public function findInDirectory($name)
     {
         /** @var ScanResultInterface $entry */
-        foreach ($this->composerAutoloadProvider->findLibraries($this->baseDir->getRealPath()) as $entry) {
+        foreach ($this->composerLibraryFinder->findLibraries($this->baseDir->getRealPath()) as $entry) {
             if ($entry->getFileInfo()->isDir()) {
                 foreach (Util::findInDirectory($name, $entry->getFileInfo()->getRealPath()) as $file) {
                     yield new LazyScanResult($file, $this->baseDir, $entry->getFileInfo(), $entry->getReference());

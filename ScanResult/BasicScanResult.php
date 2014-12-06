@@ -4,6 +4,11 @@ namespace SHyx0rmZ\ProjectScanner\ScanResult;
 
 use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Class BasicScanResult
+ * @package SHyx0rmZ\ProjectScanner\ScanResult
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
 class BasicScanResult implements ScanResultInterface
 {
     /** @var SplFileInfo */
@@ -22,7 +27,7 @@ class BasicScanResult implements ScanResultInterface
     }
 
     /**
-     * @return SplFileInfo
+     * @inheritdoc
      */
     public function getFileInfo()
     {
@@ -30,7 +35,7 @@ class BasicScanResult implements ScanResultInterface
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getReference()
     {

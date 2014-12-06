@@ -5,6 +5,11 @@ namespace SHyx0rmZ\ProjectScanner\ScanResult;
 use SHyx0rmZ\ProjectScanner\Util\Util;
 use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Class LazyScanResult
+ * @package SHyx0rmZ\ProjectScanner\ScanResult
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
 class LazyScanResult implements ScanResultInterface
 {
     /** @var SplFileInfo */
@@ -20,6 +25,12 @@ class LazyScanResult implements ScanResultInterface
     /** @var string */
     protected $reference = null;
 
+    /**
+     * @param SplFileInfo $file
+     * @param SplFileInfo $fileInfoRootDir
+     * @param SplFileInfo $referenceRootDir
+     * @param string $referencePrefix
+     */
     public function __construct(SplFileInfo $file, SplFileInfo $fileInfoRootDir, SplFileInfo $referenceRootDir, $referencePrefix = '')
     {
         $this->file = $file;
@@ -28,6 +39,9 @@ class LazyScanResult implements ScanResultInterface
         $this->referencePrefix = $referencePrefix ? $referencePrefix . DIRECTORY_SEPARATOR : '';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getFileInfo()
     {
         if ($this->info === null) {
@@ -41,6 +55,9 @@ class LazyScanResult implements ScanResultInterface
         return $this->info;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getReference()
     {
         if ($this->reference === null) {

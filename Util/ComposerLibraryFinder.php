@@ -6,7 +6,12 @@ use SHyx0rmZ\ProjectScanner\ScanResult\BasicScanResult;
 use SHyx0rmZ\ProjectScanner\ScanResult\ScanResultInterface;
 use Symfony\Component\Finder\SplFileInfo;
 
-class ComposerAutoloadProvider
+/**
+ * Class ComposerLibraryFinder
+ * @package SHyx0rmZ\ProjectScanner\Util
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
+class ComposerLibraryFinder
 {
     /** @var array */
     private $namespaceFiles = array(

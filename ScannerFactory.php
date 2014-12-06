@@ -5,8 +5,13 @@ namespace SHyx0rmZ\ProjectScanner;
 use SHyx0rmZ\ProjectScanner\Scanner\ScannerInterface;
 use SHyx0rmZ\ProjectScanner\Scanner\SourceScanner;
 use SHyx0rmZ\ProjectScanner\Scanner\VendorScanner;
-use SHyx0rmZ\ProjectScanner\Util\ComposerAutoloadProvider;
+use SHyx0rmZ\ProjectScanner\Util\ComposerLibraryFinder;
 
+/**
+ * Class ScannerFactory
+ * @package SHyx0rmZ\ProjectScanner
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
 class ScannerFactory
 {
     const SOURCE_SCANNER = SourceScanner::class;
@@ -23,7 +28,7 @@ class ScannerFactory
             case static::SOURCE_SCANNER:
                 return new SourceScanner();
             case static::VENDOR_SCANNER:
-                return new VendorScanner(new ComposerAutoloadProvider());
+                return new VendorScanner(new ComposerLibraryFinder());
         }
 
         throw new \UnexpectedValueException('Factory does not know how to create type: ' . $type);

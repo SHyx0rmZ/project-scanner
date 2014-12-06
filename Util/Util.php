@@ -1,19 +1,40 @@
 <?php
 
 namespace SHyx0rmZ\ProjectScanner\Util;
+use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Class Util
+ * @package SHyx0rmZ\ProjectScanner\Util
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
 class Util
 {
+    /**
+     * @param string $path
+     * @param string $base
+     * @return string
+     */
     public static function getInverseRelativePathname($path, $base)
     {
         return preg_replace('/' . $base .  '$/', '', $path);
     }
 
+    /**
+     * @param string $path
+     * @param string $root
+     * @return string
+     */
     public static function getRelativePath($path, $root)
     {
         return dirname(self::getRelativePathname($path, $root));
     }
 
+    /**
+     * @param string $path
+     * @param string $root
+     * @return string
+     */
     public static function getRelativePathname($path, $root)
     {
         $path = realpath($path);
@@ -26,6 +47,10 @@ class Util
         return $path;
     }
 
+    /**
+     * @param string $path
+     * @return string
+     */
     public static function getReference($path)
     {
         $reference = (dirname($path) != '.' ? dirname($path) . DIRECTORY_SEPARATOR : '') . basename($path, '.php');
@@ -38,7 +63,7 @@ class Util
     /**
      * @param string $name
      * @param string $path
-     * @return \Symfony\Component\Finder\SplFileInfo[]
+     * @return SplFileInfo[]
      */
     public static function findInDirectory($name, $path)
     {
@@ -47,6 +72,11 @@ class Util
         return $finder->findInDirectory($name, $path);
     }
 
+    /**
+     * @param string $rootPath
+     * @param string $relativePath
+     * @return string
+     */
     public static function modifyPath($rootPath, $relativePath)
     {
         $modifiedPath = $rootPath;

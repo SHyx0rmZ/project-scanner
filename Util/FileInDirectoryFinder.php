@@ -5,6 +5,11 @@ namespace SHyx0rmZ\ProjectScanner\Util;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Class FileInDirectoryFinder
+ * @package SHyx0rmZ\ProjectScanner\Util
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
 class FileInDirectoryFinder
 {
     /**

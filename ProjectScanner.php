@@ -6,6 +6,11 @@ use SHyx0rmZ\ProjectScanner\Scanner\SourceScanner;
 use SHyx0rmZ\ProjectScanner\Scanner\VendorScanner;
 use SHyx0rmZ\ProjectScanner\ScanResult\ScanResultInterface;
 
+/**
+ * Class ProjectScanner
+ * @package SHyx0rmZ\ProjectScanner
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
 class ProjectScanner
 {
     /** @var SourceScanner */
@@ -13,6 +18,9 @@ class ProjectScanner
     /** @var VendorScanner */
     private $vendorScanner;
 
+    /**
+     * @param ScannerFactory $scannerFactory
+     */
     public function __construct(ScannerFactory $scannerFactory = null)
     {
         if ($scannerFactory == null) {
