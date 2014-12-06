@@ -2,24 +2,23 @@
 
 namespace SHyx0rmZ\ProjectScanner\Scanner;
 
-use SHyx0rmZ\ProjectScanner\ScanResult\SourceScanResult;
+use SHyx0rmZ\ProjectScanner\ScanResult\LazyScanResult;
 use SHyx0rmZ\ProjectScanner\Util\Util;
 use Symfony\Component\Finder\SplFileInfo;
 
-class SourceScanner implements ScannerInterface
+/**
+ * Class SourceScanner
+ * @package SHyx0rmZ\ProjectScanner\Scanner
+ * @author Patrick Pokatilo <mail@shyxormz.net>
+ */
+class SourceScanner extends AbstractDirectoryScanner
 {
-    private $sourceDir;
-
-    public function __construct($sourceDir = null, $projectDir = null)
+    /**
+     * @inheritdoc
+     */
+    public function getBaseDirSuffix()
     {
-        $projectDir = $projectDir ?: Util::modifyPath(__DIR__, '../../../..');
-        $sourceDir = $sourceDir ?: Util::modifyPath(__DIR__, '../../../../src');
-
-        $this->sourceDir = new SplFileInfo(
-            $sourceDir,
-            Util::getRelativePath($sourceDir, $projectDir),
-            Util::getRelativePathname($sourceDir, $projectDir)
-        );
+        return 'src';
     }
 
     /**
@@ -28,8 +27,8 @@ class SourceScanner implements ScannerInterface
     public function findInDirectory($name)
     {
         /** @var SplFileInfo $file */
-        foreach (Util::findInDirectory($name, $this->sourceDir->getRealPath()) as $file) {
-            yield new SourceScanResult($this->sourceDir, $file);
+        foreach (Util::findInDirectory($name, $this->baseDir->getRealPath()) as $file) {
+            yield new LazyScanResult($file, $this->baseDir, $this->baseDir);
         }
     }
 }

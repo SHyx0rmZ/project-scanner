@@ -25,7 +25,6 @@ class FileInDirectoryFinder
             /** @var SplFileInfo $file */
             foreach ($fileFinder as $file) {
                 yield $file;
-
             }
         }
     }

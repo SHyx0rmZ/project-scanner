@@ -4,6 +4,11 @@ namespace SHyx0rmZ\ProjectScanner\Util;
 
 class Util
 {
+    public static function getInverseRelativePathname($path, $base)
+    {
+        return preg_replace('/' . $base .  '$/', '', $path);
+    }
+
     public static function getRelativePath($path, $root)
     {
         return dirname(self::getRelativePathname($path, $root));
@@ -23,7 +28,7 @@ class Util
 
     public static function getReference($path)
     {
-        $reference = dirname($path) . DIRECTORY_SEPARATOR . basename($path, '.php');
+        $reference = (dirname($path) != '.' ? dirname($path) . DIRECTORY_SEPARATOR : '') . basename($path, '.php');
         $reference = str_replace(DIRECTORY_SEPARATOR, '\\', $reference);
         $reference = str_replace('\\\\', '\\', $reference);
 

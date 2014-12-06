@@ -25,7 +25,7 @@ class LazyScanResult implements ScanResultInterface
         $this->file = $file;
         $this->fileInfoRootDir = $fileInfoRootDir;
         $this->referenceRootDir = $referenceRootDir;
-        $this->referencePrefix = $referencePrefix;
+        $this->referencePrefix = $referencePrefix ? $referencePrefix . DIRECTORY_SEPARATOR : '';
     }
 
     public function getFileInfo()
@@ -33,8 +33,8 @@ class LazyScanResult implements ScanResultInterface
         if ($this->info === null) {
             $this->info = new SplFileInfo(
                 $this->file->getRealPath(),
-                Util::getRelativePath($this->file->getRealPath(), $this->fileInfoRootDir->getRelativePath()),
-                Util::getRelativePathname($this->file->getRealPath(), $this->fileInfoRootDir->getRelativePath())
+                Util::getRelativePath($this->file->getRealPath(), $this->fileInfoRootDir->getPath()),
+                Util::getRelativePathname($this->file->getRealPath(), $this->fileInfoRootDir->getPath())
             );
         }
 

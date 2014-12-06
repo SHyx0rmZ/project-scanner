@@ -35,6 +35,23 @@ class ComposerAutoloadProvider
     }
 
     /**
+     * @param string $namespace
+     * @param string $vendorDir
+     * @param SplFileInfo $entry
+     * @return BasicScanResult
+     */
+    private function buildScanResult($namespace, $vendorDir, $entry)
+    {
+        $info = new SplFileInfo(
+            $entry,
+            Util::getRelativePath($entry, $vendorDir),
+            Util::getRelativePathname($entry, $vendorDir)
+        );
+
+        return new BasicScanResult($info, $namespace);
+    }
+
+    /**
      * @param string $vendorDir
      * @return ScanResultInterface[]
      */
@@ -51,13 +68,7 @@ class ComposerAutoloadProvider
                 }
 
                 foreach ($directories as $directory) {
-                    $info = new SplFileInfo(
-                        $directory,
-                        Util::getRelativePath($directory, $vendorDir),
-                        Util::getRelativePathname($directory, $vendorDir)
-                    );
-
-                    yield new BasicScanResult($info, $namespace);
+                    yield $this->buildScanResult($namespace, $vendorDir, $directory);
                 }
             }
         }
@@ -71,13 +82,7 @@ class ComposerAutoloadProvider
     {
         foreach ($this->classmapFiles as $classmapFile) {
             foreach ($this->getVendorMap($vendorDir, $classmapFile) as $namespace => $file) {
-                $info = new SplFileInfo(
-                    $file,
-                    Util::getRelativePath($file, $vendorDir),
-                    Util::getRelativePathname($file, $vendorDir)
-                );
-
-                yield new BasicScanResult($info, $namespace);
+                yield $this->buildScanResult($namespace, $vendorDir, $file);
             }
         }
     }
