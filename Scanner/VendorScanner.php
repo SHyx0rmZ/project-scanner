@@ -16,7 +16,7 @@ class VendorScanner implements ScannerInterface
     /** @var ComposerAutoloadProvider */
     private $composerAutoloadProvider;
     /** @var SplFileInfo */
-    private $vendorRoot;
+    private $vendorDir;
 
     public function __construct(ComposerAutoloadProvider $composerAutoloadProvider, $vendorDir = null, $projectDir = null)
     {
@@ -30,7 +30,7 @@ class VendorScanner implements ScannerInterface
             $vendorDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'vendor';
         }
 
-        $this->vendorRoot = new SplFileInfo(
+        $this->vendorDir = new SplFileInfo(
             $vendorDir,
             Util::getRelativePath($vendorDir, $projectDir),
             Util::getRelativePathname($vendorDir, $projectDir)
@@ -43,17 +43,14 @@ class VendorScanner implements ScannerInterface
     public function findInDirectory($name)
     {
         /** @var ScanResultInterface $entry */
-        foreach ($this->composerAutoloadProvider->findLibraries($this->vendorRoot->getRealPath()) as $entry) {
+        foreach ($this->composerAutoloadProvider->findLibraries($this->vendorDir->getRealPath()) as $entry) {
             if (!$entry->getFileInfo()->isDir()) {
                 continue;
             }
 
             foreach (Util::findInDirectory($name, $entry->getFileInfo()->getRealPath()) as $file) {
-                yield new VendorScanResult($this->vendorRoot, $entry->getFileInfo(), $file, $entry->getReference());
+                yield new VendorScanResult($this->vendorDir, $entry->getFileInfo(), $file, $entry->getReference());
             }
-        }
-    }
-
         }
     }
 }

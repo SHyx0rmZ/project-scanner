@@ -9,6 +9,8 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class SourceScanner implements ScannerInterface
 {
+    private $sourceDir;
+
     public function __construct($sourceDir = null, $projectDir = null)
     {
         if ($projectDir === null) {
