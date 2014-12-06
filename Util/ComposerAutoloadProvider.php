@@ -2,6 +2,7 @@
 
 namespace SHyx0rmZ\ProjectScanner\Util;
 
+use SHyx0rmZ\ProjectScanner\ScanResult\BasicScanResult;
 use Symfony\Component\Finder\SplFileInfo;
 
 class ComposerAutoloadProvider
@@ -16,7 +17,7 @@ class ComposerAutoloadProvider
     );
 
     /**
-     * @return string[]
+     * @return \Generator
      */
     public function findLibraries($vendorDir)
     {
@@ -44,7 +45,7 @@ class ComposerAutoloadProvider
                         Util::getRelativePathname($includeDir, $vendorDir)
                     );
 
-                    yield new ComposerAutoloadEntry($info, $namespace);
+                    yield new BasicScanResult($info, $namespace);
                 }
             }
         }
