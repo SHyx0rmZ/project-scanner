@@ -2,6 +2,9 @@
 
 namespace SHyx0rmZ\ProjectScanner;
 
+use SHyx0rmZ\ProjectScanner\Scanner\SourceScanner;
+use SHyx0rmZ\ProjectScanner\Scanner\VendorScanner;
+
 class ProjectScanner
 {
     /** @var SourceScanner */
@@ -17,10 +20,6 @@ class ProjectScanner
 
     public function findInDirectory($name)
     {
-//        return array_merge(
-//            $this->sourceScanner->findInDirectory($name),
-//            $this->vendorScanner->findInDirectory($name)
-//        );
         foreach ($this->sourceScanner->findInDirectory($name) as $scanResult) {
             yield $scanResult;
         }

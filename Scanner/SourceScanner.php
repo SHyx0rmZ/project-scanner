@@ -6,7 +6,7 @@ use SHyx0rmZ\ProjectScanner\ScanResult\SourceScanResult;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class SourceScanner
+class SourceScanner implements ScannerInterface
 {
     /**
      * @inheritdoc

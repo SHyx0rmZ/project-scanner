@@ -82,8 +82,6 @@ class VendorScanner implements ScannerInterface
      */
     public function findInDirectory($name)
     {
-        $result = array();
-
         $vendor = new SplFileInfo(
             __DIR__ . '/../../../..',
             '',
