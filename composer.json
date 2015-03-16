@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Scan directories (for example vendor/, src/) for stuff",
     "keywords": [ "scan", "find", "vendor" ],
-    "homepage": "http://github/SHyx0rmZ/project-scanner",
+    "homepage": "http://github.com/SHyx0rmZ/project-scanner",
     "license": "MIT",
     "authors": [
         {
